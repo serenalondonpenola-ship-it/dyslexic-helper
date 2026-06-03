@@ -89,17 +89,41 @@ input[type="password"],
 textarea,
 #file-input {
   width: 100%;
+  max-width: 100ch;
+  min-width: min(45ch, 100%);
   padding: 14px 16px;
   border: 2px solid #d4d0c4;
   border-radius: 14px;
   background: #fcfcfb;
   color: #1c1c1c;
-  font-size: 1rem;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+  word-spacing: 0.16em;
   margin-bottom: 16px;
 }
 textarea {
   resize: vertical;
   min-height: 150px;
+  white-space: pre-wrap;
+}
+#blank-sheet {
+  min-height: 420px;
+  border: 2px dashed #91a5a5;
+  border-radius: 22px;
+  padding: 28px;
+  background: #f8f2e9;
+  outline: none;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+  word-spacing: 0.16em;
+  max-width: 100ch;
+  min-width: min(45ch, 100%);
 }
 button {
   appearance: none;
