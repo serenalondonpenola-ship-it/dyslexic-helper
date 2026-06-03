@@ -20,6 +20,8 @@
     <header class="page-header">
       <h1>Write</h1>
       <div class="top-bar">
+        <button id="title-work-button">Title Work</button>
+        <button id="change-font-button">Change Font</button>
         <button id="save-button">Save</button>
         <a id="write-download" class="download-button" hidden>Download writing</a>
       </div>
@@ -32,5 +34,41 @@
       <div class="status" id="write-status"></div>
     </section>
   </main>
+
+  <div id="font-selector-modal" class="font-selector-modal">
+    <div class="font-selector-content">
+      <h2>Choose a Font</h2>
+      <button class="font-option" data-font="Arial">Arial</button>
+      <button class="font-option" data-font="Tahoma">Tahoma</button>
+      <button class="font-option" data-font="Verdana">Verdana</button>
+      <button class="font-option" data-font="Trebuchet MS">Trebuchet</button>
+      <button class="font-option" data-font="Helvetica">Helvetica</button>
+      <button class="font-option" data-font="'Open Sans'">Open Sans</button>
+      <button class="font-option" data-font="'Century Gothic'">Century Gothic</button>
+      <button class="font-option" data-font="Calibri">Calibri</button>
+      <button class="font-option" data-font="'Comic Sans MS'">Comic Sans</button>
+      <button class="font-option" data-font="Inter">Inter</button>
+      <button class="font-option" data-font="Roboto">Roboto</button>
+      <button class="font-option" data-font="Lato">Lato</button>
+      <button class="font-option" data-font="Nunito">Nunito</button>
+      <button class="font-option" data-font="'Nunito Sans'">Nunito Sans</button>
+      <button class="font-option" data-font="'Source Sans Pro'">Source Sans Pro</button>
+      <button class="font-option" data-font="'Atkinson Hyperlegible'">Atkinson Hyperlegible</button>
+      <button class="font-option" data-font="Ubuntu">Ubuntu</button>
+      <button class="font-option" data-font="'PT Sans'">PT Sans</button>
+    </div>
+  </div>
+
+  <div id="title-modal" class="title-modal">
+    <div class="title-modal-content">
+      <h2>Title Your Work</h2>
+      <input type="text" id="title-input" placeholder="Enter a title for your work..." maxlength="100">
+      <div class="title-modal-buttons">
+        <button id="title-save-button">Save Title</button>
+        <button id="title-cancel-button">Cancel</button>
+      </div>
+      <div id="title-status"></div>
+    </div>
+  </div>
 </body>
 </html>

@@ -19,6 +19,16 @@ function clearCurrentUser() {
   localStorage.removeItem('currentDyslexicUser');
 }
 
+function getCurrentWorkTitle() {
+  const user = getCurrentUser() || 'guest';
+  return localStorage.getItem(`dyslexicWorkTitle_${user}`) || '';
+}
+
+function setCurrentWorkTitle(title) {
+  const user = getCurrentUser() || 'guest';
+  localStorage.setItem(`dyslexicWorkTitle_${user}`, title);
+}
+
 function createDownloadLink(text, filename) {
   const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
   return URL.createObjectURL(blob);
@@ -110,6 +120,54 @@ function loadWriting() {
   return localStorage.getItem(`dyslexicWrite_${user}`) || '';
 }
 
+function initTitleModal() {
+  const titleButton = document.getElementById('title-work-button');
+  const titleModal = document.getElementById('title-modal');
+  const titleInput = document.getElementById('title-input');
+  const titleSaveButton = document.getElementById('title-save-button');
+  const titleCancelButton = document.getElementById('title-cancel-button');
+  const titleStatus = document.getElementById('title-status');
+
+  if (!titleButton || !titleModal) return;
+
+  titleButton.addEventListener('click', () => {
+    titleInput.value = getCurrentWorkTitle();
+    titleStatus.textContent = '';
+    titleModal.classList.add('show');
+    titleInput.focus();
+  });
+
+  titleCancelButton.addEventListener('click', () => {
+    titleModal.classList.remove('show');
+  });
+
+  titleModal.addEventListener('click', (e) => {
+    if (e.target === titleModal) {
+      titleModal.classList.remove('show');
+    }
+  });
+
+  titleSaveButton.addEventListener('click', () => {
+    const title = titleInput.value.trim();
+    if (!title) {
+      titleStatus.textContent = 'Please enter a title.';
+      return;
+    }
+    setCurrentWorkTitle(title);
+    titleStatus.textContent = 'Title saved successfully!';
+    setTimeout(() => {
+      titleModal.classList.remove('show');
+      titleStatus.textContent = '';
+    }, 1000);
+  });
+
+  titleInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      titleSaveButton.click();
+    }
+  });
+}
+
 function initHomePage() {
   showUserPanel('home-user-panel');
   const savedSection = document.getElementById('saved-work-content');
@@ -125,6 +183,7 @@ function initHomePage() {
 
 function initUploadPage() {
   showUserPanel('upload-user-panel');
+  initTitleModal();
   const fileInput = document.getElementById('file-input');
   const transformButton = document.getElementById('file-transform-button');
   const output = document.getElementById('file-output');
@@ -157,8 +216,10 @@ function initUploadPage() {
     }
     const transformed = transformText(text);
     output.value = transformed;
-    downloadLink.href = createDownloadLink(transformed, 'transformed-text.txt');
-    downloadLink.download = 'transformed-text.txt';
+    const title = getCurrentWorkTitle();
+    const filename = title ? `${title}.txt` : 'transformed-text.txt';
+    downloadLink.href = createDownloadLink(transformed, filename);
+    downloadLink.download = filename;
     downloadLink.hidden = false;
     status.textContent = 'Transformed text ready. You can download it or copy it.';
   });
@@ -166,6 +227,7 @@ function initUploadPage() {
 
 function initPastePage() {
   showUserPanel('paste-user-panel');
+  initTitleModal();
   const input = document.getElementById('paste-input');
   const button = document.getElementById('paste-transform-button');
   const output = document.getElementById('paste-output');
@@ -180,24 +242,69 @@ function initPastePage() {
     }
     const transformed = transformText(original);
     output.value = transformed;
-    downloadLink.href = createDownloadLink(transformed, 'transformed-text.txt');
-    downloadLink.download = 'transformed-text.txt';
+    const title = getCurrentWorkTitle();
+    const filename = title ? `${title}.txt` : 'transformed-text.txt';
+    downloadLink.href = createDownloadLink(transformed, filename);
+    downloadLink.download = filename;
     downloadLink.hidden = false;
     status.textContent = 'Text transformed successfully. Download if you want.';
   });
 }
 
+function getCurrentFont() {
+  const user = getCurrentUser() || 'guest';
+  return localStorage.getItem(`dyslexicFont_${user}`) || 'Arial';
+}
+
+function setCurrentFont(fontName) {
+  const user = getCurrentUser() || 'guest';
+  localStorage.setItem(`dyslexicFont_${user}`, fontName);
+}
+
 function initWritePage() {
   showUserPanel('write-user-panel');
+  initTitleModal();
   const sheet = document.getElementById('blank-sheet');
   const saveButton = document.getElementById('save-button');
   const status = document.getElementById('write-status');
   const downloadLink = document.getElementById('write-download');
+  const changeFontButton = document.getElementById('change-font-button');
+  const fontSelectorModal = document.getElementById('font-selector-modal');
 
   const saved = loadWriting();
   if (saved) {
     sheet.textContent = saved;
   }
+
+  const currentFont = getCurrentFont();
+  sheet.style.fontFamily = currentFont;
+
+  changeFontButton.addEventListener('click', () => {
+    fontSelectorModal.classList.add('show');
+  });
+
+  fontSelectorModal.addEventListener('click', (e) => {
+    if (e.target === fontSelectorModal) {
+      fontSelectorModal.classList.remove('show');
+    }
+  });
+
+  const fontOptions = document.querySelectorAll('.font-option');
+  fontOptions.forEach(option => {
+    const optionFont = option.getAttribute('data-font');
+    if (optionFont === currentFont) {
+      option.classList.add('active');
+    }
+    option.addEventListener('click', () => {
+      fontOptions.forEach(opt => opt.classList.remove('active'));
+      option.classList.add('active');
+      sheet.style.fontFamily = optionFont;
+      setCurrentFont(optionFont);
+      fontSelectorModal.classList.remove('show');
+      status.textContent = `Font changed to ${option.textContent}`;
+      setTimeout(() => { status.textContent = ''; }, 2000);
+    });
+  });
 
   saveButton.addEventListener('click', () => {
     const text = sheet.textContent.trim();
@@ -206,7 +313,8 @@ function initWritePage() {
       return;
     }
     saveWriting(text);
-    const filename = getCurrentUser() ? `${getCurrentUser()}-writing.txt` : 'guest-writing.txt';
+    const title = getCurrentWorkTitle();
+    const filename = title ? `${title}.txt` : (getCurrentUser() ? `${getCurrentUser()}-writing.txt` : 'guest-writing.txt');
     downloadLink.href = createDownloadLink(text, filename);
     downloadLink.download = filename;
     downloadLink.hidden = false;

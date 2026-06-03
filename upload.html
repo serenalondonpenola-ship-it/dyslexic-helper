@@ -19,6 +19,9 @@
   <main class="content">
     <header class="page-header">
       <h1>Upload File</h1>
+      <div class="top-bar">
+        <button id="title-work-button">Title Work</button>
+      </div>
       <div class="user-panel" id="upload-user-panel"></div>
     </header>
     <section class="form-card dyslexic-font">
@@ -31,5 +34,17 @@
       <a id="file-download" class="download-button" hidden>Download transformed file</a>
     </section>
   </main>
+
+  <div id="title-modal" class="title-modal">
+    <div class="title-modal-content">
+      <h2>Title Your Work</h2>
+      <input type="text" id="title-input" placeholder="Enter a title for your work..." maxlength="100">
+      <div class="title-modal-buttons">
+        <button id="title-save-button">Save Title</button>
+        <button id="title-cancel-button">Cancel</button>
+      </div>
+      <div id="title-status"></div>
+    </div>
+  </div>
 </body>
 </html>
