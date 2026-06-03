@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dyslexic Helper - Write</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="app-brand">Dyslexic Helper</div>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="upload.html">Upload File</a>
+    <a href="paste.html">Paste Text</a>
+    <a href="write.html" class="active">Write</a>
+  </nav>
+  <main class="content">
+    <header class="page-header">
+      <h1>Write</h1>
+      <div class="top-bar">
+        <button id="save-button">Save</button>
+        <a id="write-download" class="download-button" hidden>Download writing</a>
+      </div>
+      <div class="user-panel" id="write-user-panel"></div>
+    </header>
+    <section class="write-card dyslexic-font">
+      <div id="blank-sheet" contenteditable="true" spellcheck="false" aria-label="Blank writing sheet">
+        Start writing here in dyslexic-friendly text...
+      </div>
+      <div class="status" id="write-status"></div>
+    </section>
+  </main>
+</body>
+</html>

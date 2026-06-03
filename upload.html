@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dyslexic Helper - Upload File</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="app-brand">Dyslexic Helper</div>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="upload.html" class="active">Upload File</a>
+    <a href="paste.html">Paste Text</a>
+    <a href="write.html">Write</a>
+  </nav>
+  <main class="content">
+    <header class="page-header">
+      <h1>Upload File</h1>
+      <div class="user-panel" id="upload-user-panel"></div>
+    </header>
+    <section class="form-card dyslexic-font">
+      <h2>Insert a text file</h2>
+      <p>Choose a file, then press <strong>Transform</strong> to turn it into dyslexic-friendly text.</p>
+      <input type="file" id="file-input" accept=".txt">
+      <button id="file-transform-button">Transform</button>
+      <div class="status" id="file-status"></div>
+      <textarea id="file-output" rows="12" placeholder="Transformed text appears here..."></textarea>
+      <a id="file-download" class="download-button" hidden>Download transformed file</a>
+    </section>
+  </main>
+</body>
+</html>

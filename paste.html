@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dyslexic Helper - Paste Text</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="app-brand">Dyslexic Helper</div>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="upload.html">Upload File</a>
+    <a href="paste.html" class="active">Paste Text</a>
+    <a href="write.html">Write</a>
+  </nav>
+  <main class="content">
+    <header class="page-header">
+      <h1>Paste Text</h1>
+      <div class="user-panel" id="paste-user-panel"></div>
+    </header>
+    <section class="form-card dyslexic-font">
+      <h2>Copy and paste your text here</h2>
+      <textarea id="paste-input" rows="12" placeholder="Paste normal text here..."></textarea>
+      <button id="paste-transform-button">Transform</button>
+      <div class="status" id="paste-status"></div>
+      <textarea id="paste-output" rows="12" placeholder="Transformed text appears here..."></textarea>
+      <a id="paste-download" class="download-button" hidden>Download transformed text</a>
+    </section>
+  </main>
+</html>

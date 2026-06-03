@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dyslexic Helper - Login</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="app-brand">Dyslexic Helper</div>
+    <a href="index.html">Home</a>
+    <a href="login.html" class="active">Login</a>
+    <a href="upload.html">Upload File</a>
+    <a href="paste.html">Paste Text</a>
+    <a href="write.html">Write</a>
+  </nav>
+  <main class="content">
+    <header class="page-header">
+      <h1>Login</h1>
+      <div class="user-panel" id="login-user-panel"></div>
+    </header>
+    <section class="form-card dyslexic-font">
+      <h2>Sign in or create a new account</h2>
+      <p>Enter a username and password to save your writing inside the web app.</p>
+      <form id="login-form">
+        <label for="username">Username</label>
+        <input type="text" id="username" autocomplete="username" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" autocomplete="current-password" required>
+
+        <button type="submit">Login / Register</button>
+      </form>
+      <div class="status" id="login-status"></div>
+      <p class="help-text">If you are new, this will create your account and keep your saved work in the app.</p>
+    </section>
+  </main>
+</body>
+</html>
