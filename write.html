@@ -17,21 +17,28 @@
     <a href="write.html" class="active">Write</a>
   </nav>
   <main class="content">
-    <header class="page-header">
+    <header class="page-header write-page-header">
       <h1>Write</h1>
-      <div class="top-bar">
-        <button id="title-work-button">Title Work</button>
-        <button id="change-font-button">Change Font</button>
-        <button id="save-button">Save</button>
-        <a id="write-download" class="download-button" hidden>Download writing</a>
-      </div>
       <div class="user-panel" id="write-user-panel"></div>
     </header>
     <section class="write-card dyslexic-font">
-      <div id="blank-sheet" contenteditable="true" spellcheck="false" aria-label="Blank writing sheet">
-        Start writing here in dyslexic-friendly text...
+      <div class="write-layout">
+        <aside class="write-controls">
+          <div class="signed-in">Signed in as: <span id="write-username">Guest</span></div>
+          <div class="controls-list">
+            <button id="title-work-button">Title Work</button>
+            <button id="change-font-button">Change Font</button>
+            <button id="save-button">Save</button>
+            <a id="write-download" class="download-button" hidden>Download writing</a>
+          </div>
+        </aside>
+        <div class="write-area">
+          <div id="blank-sheet" contenteditable="true" spellcheck="false" aria-label="Blank writing sheet">
+            Start writing here in dyslexic-friendly text...
+          </div>
+          <div class="status" id="write-status"></div>
+        </div>
       </div>
-      <div class="status" id="write-status"></div>
     </section>
   </main>
 

@@ -4,12 +4,23 @@
   background: #f7f4ef;
   color: #1f1f1f;
 }
+:root {
+  --letter-spacing: 0.14em;
+  --line-height: 1.6;
+  --word-spacing: 0.17em;
+}
 * {
   box-sizing: border-box;
 }
 body {
   margin: 0;
   min-height: 100vh;
+}
+/* Global typography defaults requested by user */
+html, body, h1, h2, h3, h4, h5, p, a, button, input, textarea, label, div, span {
+  letter-spacing: var(--letter-spacing);
+  line-height: var(--line-height);
+  word-spacing: var(--word-spacing);
 }
 .sidebar {
   position: fixed;
@@ -44,19 +55,38 @@ body {
 }
 .content {
   margin-left: 260px;
-  padding: 36px;
-  max-width: 980px;
+  padding: 48px;
+  max-width: 1200px;
+  width: calc(100% - 320px);
 }
 .page-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto;
   gap: 18px;
+  align-items: start;
   margin-bottom: 24px;
+}
+.page-main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 .page-header h1 {
   margin: 0;
   font-size: 2.4rem;
+}
+.top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+  align-items: center;
+}
+.top-bar button,
+.top-bar .download-button,
+button,
+.download-button {
+  letter-spacing: var(--letter-spacing);
 }
 .user-panel {
   min-width: 200px;
@@ -68,7 +98,7 @@ body {
 .saved-work-card,
 .write-card {
   background: #ffffff;
-  padding: 24px;
+  padding: 32px;
   border-radius: 24px;
   box-shadow: 0 14px 45px rgba(0, 0, 0, 0.08);
   margin-bottom: 20px;
@@ -81,7 +111,7 @@ body {
 .dyslexic-font {
   font-family: 'Comic Sans MS', 'Comic Sans', Arial, sans-serif;
   line-height: 1.8;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--letter-spacing);
   color: #222;
 }
 input[type="text"],
@@ -98,9 +128,9 @@ textarea,
   color: #1c1c1c;
   font-family: Arial, sans-serif;
   font-size: 16px;
-  line-height: 1.5;
-  letter-spacing: 0.12em;
-  word-spacing: 0.16em;
+  line-height: var(--line-height);
+  letter-spacing: var(--letter-spacing);
+  word-spacing: var(--word-spacing);
   margin-bottom: 16px;
 }
 textarea {
@@ -109,7 +139,7 @@ textarea {
   white-space: pre-wrap;
 }
 #blank-sheet {
-  min-height: 420px;
+  min-height: 700px;
   border: 2px dashed #91a5a5;
   border-radius: 22px;
   padding: 28px;
@@ -118,12 +148,53 @@ textarea {
   overflow-y: auto;
   white-space: pre-wrap;
   font-family: Arial, sans-serif;
-  font-size: 17px;
-  line-height: 1.5;
-  letter-spacing: 0.13em;
-  word-spacing: 0.17em;
-  max-width: 100ch;
+  font-size: 18px;
+  line-height: var(--line-height);
+  letter-spacing: var(--letter-spacing);
+  word-spacing: var(--word-spacing);
+  width: min(120ch, 100%);
+  max-width: 120ch;
   min-width: min(45ch, 100%);
+}
+
+/* Write page layout: left controls + writing area */
+.write-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.write-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.write-controls .signed-in {
+  font-weight: 600;
+  padding: 8px 10px;
+  background: #eef6f6;
+  border-radius: 8px;
+}
+.write-controls .controls-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.write-area {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Center and underline the title on the Write page */
+.write-page-header {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+.write-page-header h1 {
+  text-align: center;
+  text-decoration: underline;
+  letter-spacing: var(--letter-spacing);
 }
 .font-selector-modal {
   display: none;
@@ -264,7 +335,7 @@ button:hover {
   color: #4f4f4f;
 }
 #blank-sheet {
-  min-height: 420px;
+  min-height: 700px;
   border: 2px dashed #91a5a5;
   border-radius: 22px;
   padding: 28px;

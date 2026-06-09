@@ -263,6 +263,9 @@ function setCurrentFont(fontName) {
 
 function initWritePage() {
   showUserPanel('write-user-panel');
+  // show simple signed-in name in the left controls (if present)
+  const writeNameEl = document.getElementById('write-username');
+  if (writeNameEl) writeNameEl.textContent = getCurrentUser() || 'Guest';
   initTitleModal();
   const sheet = document.getElementById('blank-sheet');
   const saveButton = document.getElementById('save-button');
