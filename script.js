@@ -414,47 +414,70 @@ function initHomePage() {
 function initUploadPage() {
   showUserPanel('upload-user-panel');
   initTitleModal();
+  const dropZone = document.getElementById('file-drop-zone');
   const fileInput = document.getElementById('file-input');
-  const transformButton = document.getElementById('file-transform-button');
   const output = document.getElementById('file-output');
   const status = document.getElementById('file-status');
   const downloadLink = document.getElementById('file-download');
-  let fileText = '';
 
-  fileInput.addEventListener('change', () => {
-    const file = fileInput.files[0];
-    if (!file) return;
+  function handleFile(file) {
     if (!file.type && !file.name.endsWith('.txt')) {
-      status.textContent = 'Please upload a plain text (.txt) file.';
+      status.textContent = 'Please use a plain text (.txt) file.';
+      downloadLink.hidden = true;
       return;
     }
     const reader = new FileReader();
     reader.onload = () => {
-      fileText = reader.result;
-      status.textContent = `Loaded file: ${file.name}`;
-      output.value = '';
-      downloadLink.hidden = true;
+      const fileText = reader.result;
+      const formatted = transformAndFormatText(fileText);
+      output.value = formatted;
+      output.classList.add('transformed-output');
+      const title = getCurrentWorkTitle();
+      const filename = title ? `${title}.txt` : 'transformed-text.txt';
+      downloadLink.href = createDownloadLink(formatted, filename);
+      downloadLink.download = filename;
+      downloadLink.hidden = false;
+      status.textContent = `File loaded and transformed: ${file.name}`;
+      if (formatted) {
+        addSavedFile(title, formatted);
+      }
+    };
+    reader.onerror = () => {
+      status.textContent = 'Error reading file. Please try again.';
     };
     reader.readAsText(file);
+  }
+
+  dropZone.addEventListener('click', () => {
+    fileInput.click();
   });
 
-  transformButton.addEventListener('click', () => {
-    const text = fileText || output.value.trim();
-    if (!text) {
-      status.textContent = 'Upload a file or paste text before transforming.';
-      return;
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      handleFile(file);
     }
-    const formatted = transformAndFormatText(text);
-    output.value = formatted;
-    output.classList.add('transformed-output');
-    const title = getCurrentWorkTitle();
-    const filename = title ? `${title}.txt` : 'transformed-text.txt';
-    downloadLink.href = createDownloadLink(formatted, filename);
-    downloadLink.download = filename;
-    downloadLink.hidden = false;
-    status.textContent = 'Transformed text ready. You can download it or copy it.';
-    if (formatted) {
-      addSavedFile(title, formatted);
+  });
+
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropZone.classList.add('dragover');
+  });
+
+  dropZone.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropZone.classList.remove('dragover');
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropZone.classList.remove('dragover');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleFile(files[0]);
     }
   });
 }
@@ -463,28 +486,44 @@ function initPastePage() {
   showUserPanel('paste-user-panel');
   initTitleModal();
   const input = document.getElementById('paste-input');
-  const button = document.getElementById('paste-transform-button');
   const status = document.getElementById('paste-status');
   const downloadLink = document.getElementById('paste-download');
+  let transformTimeout;
 
-  button.addEventListener('click', () => {
-    const original = input.value.trim();
-    if (!original) {
-      status.textContent = 'Please paste some text to transform.';
+  function applyTransform() {
+    const original = input.value;
+    if (!original.trim()) {
+      downloadLink.hidden = true;
       return;
     }
     const formatted = transformAndFormatText(original);
     input.value = formatted;
     input.classList.add('formatted-paste-text');
+    input.style.cssText = `
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      letter-spacing: 0.15em;
+      word-spacing: 0.19em;
+      text-align: left;
+    `;
     const title = getCurrentWorkTitle();
     const filename = title ? `${title}.txt` : 'transformed-text.txt';
     downloadLink.href = createDownloadLink(formatted, filename);
     downloadLink.download = filename;
     downloadLink.hidden = false;
-    status.textContent = 'Text transformed successfully. Download if you want.';
-    if (formatted) {
-      addSavedFile(title, formatted);
-    }
+    status.textContent = 'Text is being formatted for readability.';
+    setTimeout(() => { status.textContent = ''; }, 2000);
+  }
+
+  input.addEventListener('input', () => {
+    clearTimeout(transformTimeout);
+    transformTimeout = setTimeout(applyTransform, 800);
+  });
+
+  input.addEventListener('paste', () => {
+    clearTimeout(transformTimeout);
+    setTimeout(applyTransform, 50);
   });
 }
 
@@ -580,10 +619,10 @@ function initPage() {
   if (document.getElementById('home-saved-section')) {
     initHomePage();
   }
-  if (document.getElementById('file-transform-button')) {
+  if (document.getElementById('file-drop-zone')) {
     initUploadPage();
   }
-  if (document.getElementById('paste-transform-button')) {
+  if (document.getElementById('paste-input')) {
     initPastePage();
   }
   if (document.getElementById('saved-files-list')) {

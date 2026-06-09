@@ -162,6 +162,30 @@ textarea {
   min-height: 150px;
   white-space: pre-wrap;
 }
+.file-drop-zone {
+  border: 3px dashed #91a5a5;
+  border-radius: 16px;
+  padding: 48px 20px;
+  text-align: center;
+  background: #f8f2e9;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 16px;
+}
+.file-drop-zone:hover {
+  background: #f0e9dc;
+  border-color: #476a6a;
+}
+.file-drop-zone.dragover {
+  background: #e8e0d0;
+  border-color: #2a5332;
+  transform: scale(1.02);
+}
+.file-drop-zone p {
+  margin: 0;
+  color: #476a6a;
+  font-weight: 600;
+}
 #blank-sheet {
   min-height: 700px;
   border: 2px dashed #91a5a5;

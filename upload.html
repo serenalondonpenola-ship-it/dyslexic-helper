@@ -27,12 +27,13 @@
       <div class="user-panel" id="upload-user-panel"></div>
     </header>
     <section class="form-card dyslexic-font">
-      <h2>Insert a text file</h2>
-      <p>Choose a file, then press <strong>Transform</strong> to turn it into dyslexic-friendly text.</p>
-      <input type="file" id="file-input" accept=".txt">
-      <button id="file-transform-button">Transform</button>
+      <h2>Drag and drop a text file here - it transforms automatically</h2>
+      <div id="file-drop-zone" class="file-drop-zone">
+        <p>Drag and drop a .txt file here</p>
+        <input type="file" id="file-input" accept=".txt" hidden>
+      </div>
       <div class="status" id="file-status"></div>
-      <textarea id="file-output" rows="12" placeholder="Transformed text appears here..."></textarea>
+      <textarea id="file-output" rows="18" placeholder="Transformed text appears here..." readonly></textarea>
       <a id="file-download" class="download-button" hidden>Download transformed file</a>
     </section>
   </main>
