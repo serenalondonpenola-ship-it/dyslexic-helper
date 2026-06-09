@@ -14,7 +14,9 @@
     <a href="login.html">Login</a>
     <a href="upload.html">Upload File</a>
     <a href="paste.html">Paste Text</a>
+    <a href="saved.html">Saved Files</a>
     <a href="write.html" class="active">Write</a>
+    <button id="change-visuals-button" class="nav-button">Change Visuals</button>
   </nav>
   <main class="content">
     <header class="page-header write-page-header">
@@ -75,6 +77,44 @@
         <button id="title-cancel-button">Cancel</button>
       </div>
       <div id="title-status"></div>
+    </div>
+  </div>
+
+  <div id="change-visuals-modal" class="change-visuals-modal">
+    <div class="change-visuals-content">
+      <h2>Change Visuals</h2>
+      <div class="visuals-grid">
+        <label>Font
+          <select id="visual-font-select">
+            <option value="Arial">Arial</option>
+            <option value="Tahoma">Tahoma</option>
+            <option value="Verdana">Verdana</option>
+            <option value="'Trebuchet MS'">Trebuchet MS</option>
+            <option value="Helvetica">Helvetica</option>
+            <option value="Roboto">Roboto</option>
+            <option value="'Open Sans'">Open Sans</option>
+          </select>
+        </label>
+        <label>Letter spacing
+          <div class="visuals-row"><input type="range" id="visual-letter-spacing" min="0" max="0.4" step="0.01"><span id="letter-spacing-value"></span></div>
+        </label>
+        <label>Word spacing
+          <div class="visuals-row"><input type="range" id="visual-word-spacing" min="0" max="0.4" step="0.01"><span id="word-spacing-value"></span></div>
+        </label>
+        <label>Background color
+          <input type="color" id="visual-bg-color" value="#f7f4ef">
+        </label>
+        <label>Text color
+          <input type="color" id="visual-text-color" value="#1f1f1f">
+        </label>
+        <label>Accent color
+          <input type="color" id="visual-accent-color" value="#418383">
+        </label>
+      </div>
+      <div class="title-modal-buttons">
+        <button id="visual-save-button">Save visuals</button>
+        <button id="visual-cancel-button">Cancel</button>
+      </div>
     </div>
   </div>
 </body>

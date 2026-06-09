@@ -3,8 +3,13 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f7f4ef;
   color: #1f1f1f;
-}
-:root {
+  --app-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --app-background: #f7f4ef;
+  --app-foreground: #1f1f1f;
+  --surface-color: #ffffff;
+  --accent-color: #418383;
+  --button-background: #476a6a;
+  --button-foreground: #ffffff;
   --letter-spacing: 0.14em;
   --line-height: 1.6;
   --word-spacing: 0.17em;
@@ -15,6 +20,9 @@
 body {
   margin: 0;
   min-height: 100vh;
+  background: var(--app-background);
+  color: var(--app-foreground);
+  font-family: var(--app-font);
 }
 /* Global typography defaults requested by user */
 html, body, h1, h2, h3, h4, h5, p, a, button, input, textarea, label, div, span {
@@ -29,7 +37,7 @@ html, body, h1, h2, h3, h4, h5, p, a, button, input, textarea, label, div, span 
   width: 240px;
   height: 100vh;
   padding: 32px 20px;
-  background: #418383;
+  background: var(--accent-color);
   color: #eef6f6;
   display: flex;
   flex-direction: column;
@@ -41,13 +49,29 @@ html, body, h1, h2, h3, h4, h5, p, a, button, input, textarea, label, div, span 
   letter-spacing: 0.12em;
   margin-bottom: 16px;
 }
-.sidebar a {
+.sidebar a,
+.sidebar .nav-button {
   display: block;
+  width: 100%;
   padding: 12px 16px;
   border-radius: 10px;
   text-decoration: none;
   color: inherit;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  border: none;
   transition: background 0.2s ease;
+  font: inherit;
+}
+.sidebar a:hover,
+.sidebar a.active,
+.sidebar .nav-button:hover,
+.sidebar .nav-button.active {
+  background: rgba(255, 255, 255, 0.14);
+}
+.sidebar .nav-button {
+  margin-top: 8px;
 }
 .sidebar a:hover,
 .sidebar a.active {
@@ -97,7 +121,7 @@ button,
 .form-card,
 .saved-work-card,
 .write-card {
-  background: #ffffff;
+  background: var(--surface-color);
   padding: 32px;
   border-radius: 24px;
   box-shadow: 0 14px 45px rgba(0, 0, 0, 0.08);
@@ -155,6 +179,73 @@ textarea {
   width: min(120ch, 100%);
   max-width: 120ch;
   min-width: min(45ch, 100%);
+}
+
+.change-visuals-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  justify-content: center;
+  align-items: center;
+}
+.change-visuals-modal.show {
+  display: flex;
+}
+.change-visuals-content {
+  background-color: var(--surface-color);
+  color: var(--app-foreground);
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+  max-width: 520px;
+  width: 90%;
+}
+.change-visuals-content h2 {
+  margin-top: 0;
+  margin-bottom: 18px;
+}
+.visuals-grid {
+  display: grid;
+  gap: 16px;
+}
+.visuals-grid label {
+  display: grid;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+.visuals-grid input[type="range"],
+.visuals-grid select,
+.visuals-grid input[type="color"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d4d0c4;
+  border-radius: 10px;
+  background: #fcfcfb;
+  color: #1c1c1c;
+}
+.visuals-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.visuals-row span {
+  min-width: 3rem;
+  font-weight: 600;
+}
+.change-visuals-content .title-modal-buttons {
+  margin-top: 20px;
+}
+.change-visuals-content button {
+  width: 100%;
+}
+#letter-spacing-value,
+#word-spacing-value {
+  font-weight: 600;
 }
 
 /* Write page layout: left controls + writing area */
@@ -303,8 +394,8 @@ textarea {
 button {
   appearance: none;
   border: none;
-  background: #476a6a;
-  color: #ffffff;
+  background: var(--button-background);
+  color: var(--button-foreground);
   padding: 14px 22px;
   border-radius: 14px;
   font-size: 1rem;
@@ -320,8 +411,8 @@ button:hover {
   margin-top: 12px;
   padding: 12px 18px;
   text-decoration: none;
-  color: #1f4b4b;
-  background: #e7f1ef;
+  color: var(--button-foreground);
+  background: var(--button-background);
   border-radius: 12px;
   font-weight: 600;
 }
@@ -351,6 +442,40 @@ button:hover {
   gap: 12px;
   margin-bottom: 16px;
 }
+/* Special styling for formatted paste and transformed output */
+textarea.transformed-output,
+textarea.formatted-paste-text,
+#blank-sheet.transformed-output {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.15em;
+  word-spacing: 0.19em;
+  text-align: left;
+}
+
+.saved-file-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid #d4d0c4;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  background: #f8f8f8;
+}
+.saved-file-meta {
+  color: #4f4f4f;
+  font-size: 0.92rem;
+  margin-top: 6px;
+}
+.saved-file-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 @media (max-width: 860px) {
   .sidebar {
     position: relative;

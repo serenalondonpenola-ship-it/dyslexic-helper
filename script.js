@@ -38,25 +38,147 @@ function transformText(text) {
   if (!text) return '';
   const replacements = {
     a: 'ɑ',
-    A: 'Α',
     e: 'ɘ',
-    E: 'Ǝ',
     i: 'ɪ',
-    I: 'Ι',
     o: 'ɵ',
-    O: 'Ο',
     s: 'ѕ',
-    S: 'Ѕ',
     t: 'ţ',
-    T: 'Ŧ',
     d: 'ԁ',
-    D: 'Ɗ',
     r: 'ɾ',
-    R: 'Ɍ',
-    l: 'Ɩ',
-    L: 'Ł'
+    l: 'Ɩ'
   };
   return text.split('').map(char => replacements[char] || char).join('');
+}
+
+function cleanupText(text) {
+  if (!text) return '';
+  return text
+    .replace(/\*|_/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function formatTextFor100Chars(text) {
+  if (!text) return '';
+  const maxLineLength = 100;
+  const lines = [];
+  const words = text.split(/(\s+)/);
+  let currentLine = '';
+  
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    
+    if (word === '') continue;
+    
+    if (/^\s+$/.test(word)) {
+      if (currentLine && !currentLine.endsWith(' ')) {
+        currentLine += ' ';
+      }
+    } else {
+      if (currentLine.length === 0) {
+        currentLine = word;
+      } else if (currentLine.length + word.length <= maxLineLength) {
+        currentLine += word;
+      } else {
+        if (currentLine.trim()) {
+          lines.push(currentLine.trim());
+        }
+        currentLine = word;
+      }
+    }
+  }
+  
+  if (currentLine.trim()) {
+    lines.push(currentLine.trim());
+  }
+  
+  return lines.join('\n');
+}
+
+function breakUpLargeBlocks(text) {
+  if (!text) return '';
+  return text
+    .split(/\n{2,}/)
+    .map(paragraph => {
+      if (paragraph.length <= 240) return paragraph.trim();
+      const sentences = paragraph.match(/[^\.\!\?]+[\.\!\?]+(?:\s|$)/g) || [paragraph];
+      const groups = [];
+      let current = '';
+      sentences.forEach(sentence => {
+        const trimmed = sentence.trim();
+        if (!trimmed) return;
+        if (!current) {
+          current = trimmed;
+        } else if ((current + ' ' + trimmed).length <= 180) {
+          current += ' ' + trimmed;
+        } else {
+          groups.push(current);
+          current = trimmed;
+        }
+      });
+      if (current) groups.push(current);
+      return groups.join('\n\n');
+    })
+    .join('\n\n');
+}
+
+function transformAndFormatText(text) {
+  if (!text) return '';
+  const cleaned = cleanupText(text);
+  const broken = breakUpLargeBlocks(cleaned);
+  const transformed = transformText(broken);
+  return formatTextFor100Chars(transformed);
+}
+
+function getSavedFiles() {
+  const user = getCurrentUser() || 'guest';
+  const raw = localStorage.getItem(`dyslexicSavedFiles_${user}`);
+  return raw ? JSON.parse(raw) : [];
+}
+
+function setSavedFiles(files) {
+  const user = getCurrentUser() || 'guest';
+  localStorage.setItem(`dyslexicSavedFiles_${user}`, JSON.stringify(files));
+}
+
+function addSavedFile(title, content) {
+  const files = getSavedFiles();
+  const fileTitle = title ? title.trim() : 'Untitled';
+  const item = {
+    id: Date.now(),
+    title: fileTitle,
+    content: content || '',
+    savedAt: new Date().toISOString()
+  };
+  files.unshift(item);
+  setSavedFiles(files.slice(0, 100));
+  return item;
+}
+
+function renderSavedFiles() {
+  const container = document.getElementById('saved-files-list');
+  if (!container) return;
+  const files = getSavedFiles();
+  if (!files.length) {
+    container.innerHTML = '<p>No saved files yet. Transform or save text on the other pages to build a list.</p>';
+    return;
+  }
+
+  container.innerHTML = files.map(file => {
+    const savedDate = new Date(file.savedAt).toLocaleString();
+    return `
+      <div class="saved-file-row">
+        <div>
+          <strong>${file.title}</strong>
+          <div class="saved-file-meta">Saved ${savedDate}</div>
+        </div>
+        <div class="saved-file-actions">
+          <a href="${createDownloadLink(file.content, `${file.title}.txt`)}" download="${file.title}.txt" class="download-button">Download</a>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 function showUserPanel(elementId) {
@@ -168,6 +290,114 @@ function initTitleModal() {
   });
 }
 
+function getVisualSettings() {
+  const raw = localStorage.getItem('dyslexicVisualSettings');
+  return raw ? JSON.parse(raw) : {
+    font: 'Arial',
+    letterSpacing: 0.14,
+    wordSpacing: 0.17,
+    bgColor: '#f7f4ef',
+    textColor: '#1f1f1f',
+    accentColor: '#418383'
+  };
+}
+
+function setVisualSettings(settings) {
+  localStorage.setItem('dyslexicVisualSettings', JSON.stringify(settings));
+}
+
+function applyVisualSettings(settings) {
+  const root = document.documentElement.style;
+  root.setProperty('--app-font', settings.font || 'Arial');
+  root.setProperty('--letter-spacing', `${settings.letterSpacing}em`);
+  root.setProperty('--word-spacing', `${settings.wordSpacing}em`);
+  root.setProperty('--app-background', settings.bgColor || '#f7f4ef');
+  root.setProperty('--app-foreground', settings.textColor || '#1f1f1f');
+  root.setProperty('--accent-color', settings.accentColor || '#418383');
+  root.setProperty('--button-background', settings.accentColor || '#476a6a');
+  root.setProperty('--button-foreground', '#ffffff');
+}
+
+function initVisuals() {
+  const changeButton = document.getElementById('change-visuals-button');
+  const modal = document.getElementById('change-visuals-modal');
+  if (!changeButton || !modal) return;
+
+  const fontSelect = document.getElementById('visual-font-select');
+  const letterInput = document.getElementById('visual-letter-spacing');
+  const wordInput = document.getElementById('visual-word-spacing');
+  const bgInput = document.getElementById('visual-bg-color');
+  const textInput = document.getElementById('visual-text-color');
+  const accentInput = document.getElementById('visual-accent-color');
+  const saveButton = document.getElementById('visual-save-button');
+  const cancelButton = document.getElementById('visual-cancel-button');
+  const letterValue = document.getElementById('letter-spacing-value');
+  const wordValue = document.getElementById('word-spacing-value');
+
+  let settings = getVisualSettings();
+  applyVisualSettings(settings);
+
+  function updateFields(values) {
+    fontSelect.value = values.font;
+    letterInput.value = values.letterSpacing;
+    wordInput.value = values.wordSpacing;
+    bgInput.value = values.bgColor;
+    textInput.value = values.textColor;
+    accentInput.value = values.accentColor;
+    letterValue.textContent = `${values.letterSpacing}em`;
+    wordValue.textContent = `${values.wordSpacing}em`;
+  }
+
+  function updatePreview() {
+    const previewSettings = {
+      font: fontSelect.value,
+      letterSpacing: parseFloat(letterInput.value),
+      wordSpacing: parseFloat(wordInput.value),
+      bgColor: bgInput.value,
+      textColor: textInput.value,
+      accentColor: accentInput.value
+    };
+    applyVisualSettings(previewSettings);
+    letterValue.textContent = `${previewSettings.letterSpacing.toFixed(2)}em`;
+    wordValue.textContent = `${previewSettings.wordSpacing.toFixed(2)}em`;
+  }
+
+  changeButton.addEventListener('click', () => {
+    updateFields(settings);
+    modal.classList.add('show');
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('show');
+      applyVisualSettings(settings);
+    }
+  });
+
+  [fontSelect, letterInput, wordInput, bgInput, textInput, accentInput].forEach(element => {
+    element.addEventListener('input', updatePreview);
+  });
+
+  saveButton.addEventListener('click', () => {
+    const newSettings = {
+      font: fontSelect.value,
+      letterSpacing: parseFloat(letterInput.value),
+      wordSpacing: parseFloat(wordInput.value),
+      bgColor: bgInput.value,
+      textColor: textInput.value,
+      accentColor: accentInput.value
+    };
+    settings = newSettings;
+    setVisualSettings(newSettings);
+    modal.classList.remove('show');
+  });
+
+  cancelButton.addEventListener('click', () => {
+    modal.classList.remove('show');
+    applyVisualSettings(settings);
+  });
+}
+
 function initHomePage() {
   showUserPanel('home-user-panel');
   const savedSection = document.getElementById('saved-work-content');
@@ -209,19 +439,23 @@ function initUploadPage() {
   });
 
   transformButton.addEventListener('click', () => {
-    const text = fileText || output.value;
+    const text = fileText || output.value.trim();
     if (!text) {
       status.textContent = 'Upload a file or paste text before transforming.';
       return;
     }
-    const transformed = transformText(text);
-    output.value = transformed;
+    const formatted = transformAndFormatText(text);
+    output.value = formatted;
+    output.classList.add('transformed-output');
     const title = getCurrentWorkTitle();
     const filename = title ? `${title}.txt` : 'transformed-text.txt';
-    downloadLink.href = createDownloadLink(transformed, filename);
+    downloadLink.href = createDownloadLink(formatted, filename);
     downloadLink.download = filename;
     downloadLink.hidden = false;
     status.textContent = 'Transformed text ready. You can download it or copy it.';
+    if (formatted) {
+      addSavedFile(title, formatted);
+    }
   });
 }
 
@@ -230,7 +464,6 @@ function initPastePage() {
   initTitleModal();
   const input = document.getElementById('paste-input');
   const button = document.getElementById('paste-transform-button');
-  const output = document.getElementById('paste-output');
   const status = document.getElementById('paste-status');
   const downloadLink = document.getElementById('paste-download');
 
@@ -240,14 +473,18 @@ function initPastePage() {
       status.textContent = 'Please paste some text to transform.';
       return;
     }
-    const transformed = transformText(original);
-    output.value = transformed;
+    const formatted = transformAndFormatText(original);
+    input.value = formatted;
+    input.classList.add('formatted-paste-text');
     const title = getCurrentWorkTitle();
     const filename = title ? `${title}.txt` : 'transformed-text.txt';
-    downloadLink.href = createDownloadLink(transformed, filename);
+    downloadLink.href = createDownloadLink(formatted, filename);
     downloadLink.download = filename;
     downloadLink.hidden = false;
     status.textContent = 'Text transformed successfully. Download if you want.';
+    if (formatted) {
+      addSavedFile(title, formatted);
+    }
   });
 }
 
@@ -321,14 +558,24 @@ function initWritePage() {
     downloadLink.href = createDownloadLink(text, filename);
     downloadLink.download = filename;
     downloadLink.hidden = false;
+    addSavedFile(title, text);
     status.textContent = 'Your work is saved in the app and ready to download.';
   });
+}
+
+function initSavedFilesPage() {
+  showUserPanel('saved-user-panel');
+  initTitleModal();
+  renderSavedFiles();
 }
 
 function initPage() {
   const page = document.body.dataset.page || '';
   if (document.getElementById('login-form')) {
     initLoginPage();
+  }
+  if (document.getElementById('change-visuals-button')) {
+    initVisuals();
   }
   if (document.getElementById('home-saved-section')) {
     initHomePage();
@@ -338,6 +585,9 @@ function initPage() {
   }
   if (document.getElementById('paste-transform-button')) {
     initPastePage();
+  }
+  if (document.getElementById('saved-files-list')) {
+    initSavedFilesPage();
   }
   if (document.getElementById('save-button')) {
     initWritePage();

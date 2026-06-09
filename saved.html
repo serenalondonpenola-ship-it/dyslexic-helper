@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dyslexic Helper - Login</title>
+  <title>Dyslexic Helper - Saved Files</title>
   <link rel="stylesheet" href="styles.css">
   <script defer src="script.js"></script>
 </head>
@@ -11,37 +11,39 @@
   <nav class="sidebar">
     <div class="app-brand">Dyslexic Helper</div>
     <a href="index.html">Home</a>
-    <a href="login.html" class="active">Login</a>
+    <a href="login.html">Login</a>
     <a href="upload.html">Upload File</a>
     <a href="paste.html">Paste Text</a>
-    <a href="saved.html">Saved Files</a>
+    <a href="saved.html" class="active">Saved Files</a>
     <a href="write.html">Write</a>
     <button id="change-visuals-button" class="nav-button">Change Visuals</button>
   </nav>
   <main class="content">
     <header class="page-header">
-      <h1>Login</h1>
+      <h1>Saved Files</h1>
       <div class="top-bar">
-        <button id="logout-button">Logout</button>
+        <button id="title-work-button">Title Work</button>
       </div>
-      <div class="user-panel" id="login-user-panel"></div>
+      <div class="user-panel" id="saved-user-panel"></div>
     </header>
     <section class="form-card dyslexic-font">
-      <h2>Sign in or create a new account</h2>
-      <p>Enter a username and password to save your writing inside the web app.</p>
-      <form id="login-form">
-        <label for="username">Username</label>
-        <input type="text" id="username" autocomplete="username" required>
-
-        <label for="password">Password</label>
-        <input type="password" id="password" autocomplete="current-password" required>
-
-        <button type="submit">Login / Register</button>
-      </form>
-      <div class="status" id="login-status"></div>
-      <p class="help-text">If you are new, this will create your account and keep your saved work in the app.</p>
+      <h2>Your saved work</h2>
+      <p>Files are ordered from most recent to less recent. Click any download button to save a copy of the file to your computer.</p>
+      <div id="saved-files-list"></div>
     </section>
   </main>
+
+  <div id="title-modal" class="title-modal">
+    <div class="title-modal-content">
+      <h2>Title Your Work</h2>
+      <input type="text" id="title-input" placeholder="Enter a title for your work..." maxlength="100">
+      <div class="title-modal-buttons">
+        <button id="title-save-button">Save Title</button>
+        <button id="title-cancel-button">Cancel</button>
+      </div>
+      <div id="title-status"></div>
+    </div>
+  </div>
 
   <div id="change-visuals-modal" class="change-visuals-modal">
     <div class="change-visuals-content">
