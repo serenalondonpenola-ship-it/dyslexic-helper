@@ -470,12 +470,99 @@ button:hover {
 textarea.transformed-output,
 textarea.formatted-paste-text,
 #blank-sheet.transformed-output {
-  font-family: Arial, sans-serif;
+  font-family: 'Aria', Arial, sans-serif;
   font-size: 16px;
   line-height: 1.5;
   letter-spacing: 0.15em;
   word-spacing: 0.19em;
   text-align: left;
+}
+
+.saved-file-preview {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #4f4f4f;
+}
+
+.edit-file-button {
+  background: #f0c674;
+  color: #1f1f1f;
+  border: 1px solid #d4b95f;
+  padding: 12px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.edit-file-button:hover {
+  background: #e6b34f;
+}
+
+.edit-file-modal,
+.title-modal,
+.font-selector-modal,
+.change-visuals-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  justify-content: center;
+  align-items: center;
+}
+
+.edit-file-modal.show {
+  display: flex;
+}
+
+.edit-file-modal-content {
+  background-color: #fff;
+  color: #1f1f1f;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+  max-width: 600px;
+  width: 90%;
+}
+
+.edit-file-modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.edit-file-modal-content textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #d4d0c4;
+  border-radius: 14px;
+  background: #fcfcfb;
+  color: #1c1c1c;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.15em;
+  word-spacing: 0.19em;
+  margin-bottom: 16px;
+}
+
+.edit-file-modal-content input[type="text"] {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #d4d0c4;
+  border-radius: 14px;
+  background: #fcfcfb;
+  color: #1c1c1c;
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.edit-file-modal-content .title-modal-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .saved-file-row {

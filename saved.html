@@ -16,7 +16,7 @@
     <a href="paste.html">Paste Text</a>
     <a href="saved.html" class="active">Saved Files</a>
     <a href="write.html">Write</a>
-    <button id="change-visuals-button" class="nav-button">Change Visuals</button>
+    <button id="change-visuals-button" class="nav-button">Change Visuals 🌈</button>
   </nav>
   <main class="content">
     <header class="page-header">
@@ -47,7 +47,7 @@
 
   <div id="change-visuals-modal" class="change-visuals-modal">
     <div class="change-visuals-content">
-      <h2>Change Visuals</h2>
+      <h2>Change Visuals 🌈</h2>
       <div class="visuals-grid">
         <label>Font
           <select id="visual-font-select">
@@ -82,5 +82,16 @@
       </div>
     </div>
   </div>
-</body>
-</html>
+
+  <div id="edit-file-modal" class="edit-file-modal">
+    <div class="edit-file-modal-content">
+      <h2>Edit saved file</h2>
+      <input type="text" id="edit-file-title" placeholder="Edit file title..." maxlength="100">
+      <textarea id="edit-file-content" rows="12" placeholder="Edit your saved text..."></textarea>
+      <div class="title-modal-buttons">
+        <button id="edit-file-save-button">Save changes</button>
+        <button id="edit-file-cancel-button">Cancel</button>
+      </div>
+      <div id="edit-file-status"></div>
+    </div>
+  </div>

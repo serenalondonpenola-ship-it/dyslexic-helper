@@ -172,13 +172,63 @@ function renderSavedFiles() {
         <div>
           <strong>${file.title}</strong>
           <div class="saved-file-meta">Saved ${savedDate}</div>
+          <p class="saved-file-preview">${file.content.slice(0, 220).replace(/\n/g, ' ')}${file.content.length > 220 ? '…' : ''}</p>
         </div>
         <div class="saved-file-actions">
+          <button class="edit-file-button" data-file-id="${file.id}">Edit</button>
           <a href="${createDownloadLink(file.content, `${file.title}.txt`)}" download="${file.title}.txt" class="download-button">Download</a>
         </div>
       </div>
     `;
   }).join('');
+}
+
+function openEditFileModal(fileId) {
+  const files = getSavedFiles();
+  const file = files.find(item => item.id === fileId);
+  const modal = document.getElementById('edit-file-modal');
+  const titleInput = document.getElementById('edit-file-title');
+  const contentInput = document.getElementById('edit-file-content');
+  const status = document.getElementById('edit-file-status');
+  if (!file || !modal || !titleInput || !contentInput || !status) return;
+
+  modal.dataset.editingId = fileId;
+  titleInput.value = file.title;
+  contentInput.value = file.content;
+  status.textContent = '';
+  modal.classList.add('show');
+  titleInput.focus();
+}
+
+function saveEditedFile() {
+  const modal = document.getElementById('edit-file-modal');
+  const titleInput = document.getElementById('edit-file-title');
+  const contentInput = document.getElementById('edit-file-content');
+  const status = document.getElementById('edit-file-status');
+  if (!modal || !titleInput || !contentInput || !status) return;
+
+  const fileId = Number(modal.dataset.editingId);
+  const newTitle = titleInput.value.trim() || 'Untitled';
+  const newContent = contentInput.value.trim();
+
+  if (!newContent) {
+    status.textContent = 'Please enter content for the saved file.';
+    return;
+  }
+
+  const files = getSavedFiles();
+  const fileIndex = files.findIndex(item => item.id === fileId);
+  if (fileIndex === -1) {
+    status.textContent = 'Could not find the file to save.';
+    return;
+  }
+
+  files[fileIndex].title = newTitle;
+  files[fileIndex].content = newContent;
+  files[fileIndex].savedAt = new Date().toISOString();
+  setSavedFiles(files);
+  renderSavedFiles();
+  modal.classList.remove('show');
 }
 
 function showUserPanel(elementId) {
@@ -500,7 +550,7 @@ function initPastePage() {
     input.value = formatted;
     input.classList.add('formatted-paste-text');
     input.style.cssText = `
-      font-family: Arial, sans-serif;
+      font-family: 'Aria', Arial, sans-serif;
       font-size: 16px;
       line-height: 1.5;
       letter-spacing: 0.15em;
@@ -606,6 +656,41 @@ function initSavedFilesPage() {
   showUserPanel('saved-user-panel');
   initTitleModal();
   renderSavedFiles();
+
+  const editModal = document.getElementById('edit-file-modal');
+  const editSaveButton = document.getElementById('edit-file-save-button');
+  const editCancelButton = document.getElementById('edit-file-cancel-button');
+  const editTitle = document.getElementById('edit-file-title');
+  const editContent = document.getElementById('edit-file-content');
+
+  if (editSaveButton) {
+    editSaveButton.addEventListener('click', saveEditedFile);
+  }
+
+  if (editCancelButton && editModal) {
+    editCancelButton.addEventListener('click', () => editModal.classList.remove('show'));
+    editModal.addEventListener('click', event => {
+      if (event.target === editModal) {
+        editModal.classList.remove('show');
+      }
+    });
+  }
+
+  document.getElementById('saved-files-list')?.addEventListener('click', event => {
+    const target = event.target;
+    if (target instanceof HTMLElement && target.matches('.edit-file-button')) {
+      const fileId = Number(target.dataset.fileId);
+      openEditFileModal(fileId);
+    }
+  });
+
+  if (editTitle) {
+    editTitle.addEventListener('keypress', event => {
+      if (event.key === 'Enter') {
+        saveEditedFile();
+      }
+    });
+  }
 }
 
 function initPage() {
